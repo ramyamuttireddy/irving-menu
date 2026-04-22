@@ -23,7 +23,7 @@ function ItemPopup({ items, selectedIndex, setSelectedIndex }) {
           className="
             relative
             w-[95vw] sm:w-[85vw] md:w-[100vw]
-            h-[88vh]
+            h-[80vh]
             bg-white
             rounded-2xl sm:rounded-3xl
             overflow-hidden

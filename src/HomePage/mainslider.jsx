@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import pb, { safeRequest } from "../API/api";
 import { cachedRequest } from "../API/cache";
+
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, EffectFade } from "swiper/modules";
 
 import "swiper/css";
+import "swiper/css/effect-fade";
 
 function Mainslider() {
   const [images, setImages] = useState([]);
@@ -19,8 +21,8 @@ function Mainslider() {
             })
           )
         );
-        setImages(res.items);
 
+        setImages(res.items);
       } catch (error) {
         console.error(error);
       }
@@ -32,38 +34,53 @@ function Mainslider() {
   return (
     <div className="w-full h-[50vh] sm:h-[55vh] md:h-[60vh] lg:h-[80vh] xl:h-[90vh] relative overflow-hidden">
 
+      {/* Loading */}
       {images.length === 0 && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/20">
-          <p className="text-white animate-pulse">Loading...</p>
+        <div className="absolute inset-0 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+          <p className="text-white tracking-widest animate-pulse">
+            Loading...
+          </p>
         </div>
       )}
 
+      {/* Slider */}
       {images.length > 0 && (
         <Swiper
-          modules={[Autoplay]}
+          modules={[Autoplay, EffectFade]}
           slidesPerView={1}
           loop={true}
-          autoplay={{ delay: 2500 }}
+
+          // ✨ ELEGANT SETTINGS
+          speed={5000} // slow, smooth fade
+          effect="fade"
+          fadeEffect={{ crossFade: true }}
+
+          autoplay={{
+            delay: 500, // calm timing
+            disableOnInteraction: false,
+          }}
+
           className="h-full"
         >
           {images.map((item) => (
             <SwiperSlide key={item.id}>
-              <div className="w-full h-full relative">
+              <div className="w-full h-full relative overflow-hidden group">
 
+                {/* Image */}
                 <img
-                  src={pb.files.getUrl(item, item.images)} // ✅ FIX
+                  src={pb.files.getUrl(item, item.images)}
                   alt="restaurant"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover scale-105 group-hover:scale-110 transition-transform duration-[7000ms] ease-out"
                 />
 
-                <div className="absolute inset-0 bg-black/30"></div>
+                {/* Soft Gradient Overlay (premium look) */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/20 to-transparent"></div>
 
               </div>
             </SwiperSlide>
           ))}
         </Swiper>
       )}
-
     </div>
   );
 }
